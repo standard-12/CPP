@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class BrowserHistory {
+private : 
+    struct ListNode {
+        string s;
+        ListNode* next;
+        ListNode* prev;
+        ListNode(string str){
+            this->s=str;
+            next=NULL;
+            prev=NULL;
+        }
+    };
+    ListNode* head;
+    ListNode* curr;
+public:
+    BrowserHistory(string homepage) {
+        ListNode* temp=new ListNode(homepage);
+        head=temp;
+        curr=head;
+    }
+    
+    void visit(string url) {
+        ListNode* temp=new ListNode(url);
+        clearNodes(curr->next);
+        temp->prev=curr;
+        curr->next=temp;
+        curr=curr->next;
+    }
+    
+    string back(int steps) {
+        while(curr!=head && steps>0){
+        curr=curr->prev;
+        steps--;
+        }
+        return curr->s;
+    }
+    
+    string forward(int steps) {
+        while(curr->next!=NULL && steps>0){
+            curr=curr->next;
+            steps--;
+        }
+        return curr->s;
+    }
+
+    void clearNodes(ListNode* ptr){
+        while(ptr!=NULL){
+            ListNode* temp=ptr;
+            ptr=ptr->next;
+            delete temp;
+        }
+    }
+};
+
+/**
+ * Your BrowserHistory object will be instantiated and called as such:
+ * BrowserHistory* obj = new BrowserHistory(homepage);
+ * obj->visit(url);
+ * string param_2 = obj->back(steps);
+ * string param_3 = obj->forward(steps);
+ */
