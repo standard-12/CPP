@@ -191,3 +191,52 @@ public:
         return max(0, dp[maxK][n-1][n-1]);
     }
 };
+
+
+// IDK WHY BUT I SPENT LIKE 3 4 hours understanding this solution by
+// https://leetcode.com/problems/cherry-pickup/solutions/109903/step-by-step-guidance-of-the-on3-time-an-pu7u/
+// Which dervies the complete DP and he has given a Space Optimized DP for the above one 
+// It's okay if i don't remember this but i NEARLY NOT COMPLETELY understood the solution
+
+class Solution {
+public:
+    int cherryPickup(vector<vector<int>>& grid) {
+        int N = grid.size();
+        int M = 2 * N - 1;
+
+        vector<vector<int>> dp(N, vector<int>(N, -1));
+        dp[0][0] = grid[0][0];
+
+        for (int n = 1; n < M; n++) {
+            for (int i = N - 1; i >= 0; i--) {
+                for (int p = N - 1; p >= 0; p--) {
+                    int j = n - i, q = n - p;
+
+                    // invalid positions or thorn cells
+                    if (j < 0 || j >= N || q < 0 || q >= N || grid[i][j] == -1 || grid[p][q] == -1) {
+                        dp[i][p] = -1;
+                        continue;
+                    }
+
+                    int best = dp[i][p]; // (right, right)
+
+                    if (i > 0) best = max(best, dp[i - 1][p]);       // (down, right)
+                    if (p > 0) best = max(best, dp[i][p - 1]);       // (right, down)
+                    if (i > 0 && p > 0) best = max(best, dp[i - 1][p - 1]); // (down, down)
+
+                    if (best < 0) {
+                        dp[i][p] = -1;
+                        continue;
+                    }
+
+                    int cherries = grid[i][j];
+                    if (i != p) cherries += grid[p][q];
+
+                    dp[i][p] = best + cherries;
+                }
+            }
+        }
+
+        return max(0, dp[N - 1][N - 1]);
+    }
+};
