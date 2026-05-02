@@ -33,21 +33,23 @@ class Solution {
     bool isSubsetSum(vector<int>& arr, int sum) {
         // code here
         int n=arr.size();
-        vector<vector<int>> dp(n,vector<int>(sum,-1));
-        int ans= rec(arr,0,0,sum,dp);
-        return ans==1? true:false;
-    }
-    
-    int rec(vector<int>& arr,int i,int sum,int target,vector<vector<int>>& dp){
-        if(sum==target){
-            return 1;
-        }
-        if(i>=arr.size() || sum>target) return 0;
-        if(dp[i][sum]!=-1) return dp[i][sum];
+        vector<vector<bool>> dp(n,vector<bool>(sum+1,false)); // Note Sum+1 because sum is a state
         
-        int val=arr[i];
-        dp[i][sum]=max(rec(arr,i+1,sum+val,target,dp),rec(arr,i+1,sum,target,dp));
-        return dp[i][sum];
+        for(int i=0;i<n;i++) dp[i][0]=true;
+        if(arr[0]<=sum) dp[0][arr[0]]=true;
+        
+        for(int ind=1;ind<n;ind++){
+            for(int target=0;target<=sum;target++){
+                bool take=false;
+                if(target-arr[ind]>=0) take=dp[ind-1][target-arr[ind]];
+                
+                bool nontake=dp[ind-1][target];
+                
+                dp[ind][target]=take || nontake;
+            }
+        }
+        return dp[n-1][sum];
+        
     }
 };
 
