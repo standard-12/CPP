@@ -108,36 +108,3 @@ public:
     }
 };
 
-// This is O(n) space Solution of Striver with hash array
-
-class Solution {
-  public:
-    vector<int> getLIS(vector<int>& nums) {
-        int n=nums.size();
-        vector<int> dp(n,1),hash(n,0);
-        int maxi=1,maxInd=0;
-        for(int i=0;i<n;i++){
-            hash[i]=i;
-            for(int j=0;j<i;j++){
-                if(nums[i]>nums[j]){
-                    if(1+dp[j]>dp[i]){
-                        hash[i]=j;
-                        dp[i]=1+dp[j];
-                    }
-                }   
-            }
-            if(dp[i]>maxi){
-                maxi=dp[i];
-                maxInd=i;
-            }
-        }
-        vector<int> ans;
-        ans.push_back(nums[maxInd]);
-        while(hash[maxInd]!=maxInd){
-            maxInd=hash[maxInd];
-            ans.push_back(nums[maxInd]);
-        }
-        reverse(ans.begin(),ans.end());
-        return ans;
-    }
-};
