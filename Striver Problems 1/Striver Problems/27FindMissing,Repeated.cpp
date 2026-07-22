@@ -112,3 +112,32 @@ public:
         }
     }
 };
+
+
+Result findErrorNums(std::vector<int>& nums) {
+    int dup = -1;
+    int missing = -1;
+    
+    // Step 1: Mark visited indices as negative
+    for (int i = 0; i < nums.size(); ++i) {
+        int val = std::abs(nums[i]);
+        
+        // If the element at index (val - 1) is already negative, 
+        // then 'val' is our duplicate.
+        if (nums[val - 1] < 0) {
+            dup = val;
+        } else {
+            nums[val - 1] *= -1;
+        }
+    }
+    
+    // Step 2: Find the index that remains positive
+    for (int i = 0; i < nums.size(); ++i) {
+        if (nums[i] > 0) {
+            missing = i + 1; // The missing number is index + 1
+            break;
+        }
+    }
+    
+    return {dup, missing};
+}
